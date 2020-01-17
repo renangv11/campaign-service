@@ -2,7 +2,6 @@ package com.visconde.campaignservice.converter;
 
 import com.visconde.campaignservice.datacontract.CampaignDataContract;
 import com.visconde.campaignservice.model.Campaign;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

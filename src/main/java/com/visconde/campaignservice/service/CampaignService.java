@@ -1,5 +1,6 @@
 package com.visconde.campaignservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.visconde.campaignservice.datacontract.CampaignDataContract;
 
 import java.util.List;
@@ -8,9 +9,11 @@ public interface CampaignService {
 
     CampaignDataContract createCampaign(CampaignDataContract campaign);
 
-    List<CampaignDataContract> getCampaigns(String teamName);
+    List<CampaignDataContract> getCampaignsByTeamName(String teamName);
 
-    CampaignDataContract updateCampaign(CampaignDataContract campaign);
+    List<CampaignDataContract> getCampaignsByClubMember(Long clubMemberId);
+
+    CampaignDataContract updateCampaign(CampaignDataContract campaign) throws JsonProcessingException;
 
     void deleteCampaign(Long id);
 
