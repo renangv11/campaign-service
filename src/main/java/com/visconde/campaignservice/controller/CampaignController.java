@@ -32,9 +32,10 @@ public class CampaignController {
         return ResponseEntity.status(OK).body(campaignServiceImp.getCampaignsByClubMember(clubMemberId));
     }
 
-    @PutMapping(value = "/campanha")
-    public ResponseEntity<CampaignDataContract> updateCampaign(@RequestBody CampaignDataContract campaignDataContract){
-        return ResponseEntity.status(OK).body(campaignServiceImp.updateCampaign(campaignDataContract));
+    @PutMapping(value = "/campanha/{id_campanha}")
+    public ResponseEntity<CampaignDataContract> updateCampaign(@RequestBody CampaignDataContract campaignDataContract,
+                                                               @PathVariable("id_campanha") Long campaignId){
+        return ResponseEntity.status(OK).body(campaignServiceImp.updateCampaign(campaignDataContract, campaignId));
     }
 
     @DeleteMapping(value = "/campanha/{id_campanha}")

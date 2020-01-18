@@ -1,19 +1,22 @@
 package com.visconde.campaignservice.datacontract;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CampaignDataContract {
+
+    @JsonProperty("id_campanha")
+    private Long campaignId;
 
     @NotEmpty(message = "Nome da campanha não pode ser vazio")
     @JsonProperty("nome_campanha")

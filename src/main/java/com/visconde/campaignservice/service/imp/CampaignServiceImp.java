@@ -1,11 +1,11 @@
 package com.visconde.campaignservice.service.imp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.visconde.campaignservice.converter.CampaignConverter;
 import com.visconde.campaignservice.datacontract.CampaignDataContract;
+import com.visconde.campaignservice.exception.CampaignNotFoundException;
 import com.visconde.campaignservice.model.Campaign;
 import com.visconde.campaignservice.model.ClubMember;
-import com.visconde.campaignservice.producer.CampaignChangeProducer;
+import com.visconde.campaignservice.kafka.producer.CampaignChangeProducer;
 import com.visconde.campaignservice.repository.CampaignRepository;
 import com.visconde.campaignservice.repository.ClubMemberRepository;
 import com.visconde.campaignservice.repository.TeamRepository;
@@ -13,6 +13,8 @@ import com.visconde.campaignservice.service.CampaignService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,27 +31,31 @@ public class CampaignServiceImp implements CampaignService {
     private final CampaignConverter campaignConverter;
     private final CampaignChangeProducer campaignChangeProducer;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public CampaignDataContract createCampaign(CampaignDataContract campaignDataContract) {
         insertCampaign(campaignDataContract);
         return campaignDataContract;
     }
 
     private void insertCampaign(CampaignDataContract campaignDataContract) {
-        Optional<Campaign> byInitialDateAndFinalDate = campaignRepository
-                .findByInitialDateAndFinalDate(campaignDataContract.getInitialDate(), campaignDataContract.getFinalDate());
-        if(byInitialDateAndFinalDate.isPresent()){
-            organizeAllCampaigns(byInitialDateAndFinalDate);
+        Optional<Campaign> campaign = campaignRepository.findByInitialDateAndFinalDate(campaignDataContract.getInitialDate(), campaignDataContract.getFinalDate());
+        if(campaign.isPresent()){
+            organizeAllCampaignsAlertingChanges(campaign);
         }
         campaignRepository.save(campaignConverter.convertDataContractToEntity(campaignDataContract));
     }
 
-    private void organizeAllCampaigns(Optional<Campaign> optionalCampaign) {
-        if(optionalCampaign.isPresent()){
+    private void organizeAllCampaignsAlertingChanges(Optional<Campaign> optionalCampaign) {
+        if(optionalCampaign.isPresent()) {
             Campaign campaign = optionalCampaign.get();
             LocalDate datePlusOneDay = campaign.getFinalDate().plusDays(1);
             campaign.setFinalDate(datePlusOneDay);
-            organizeAllCampaigns(campaignRepository.findByInitialDateAndFinalDate(campaign.getInitialDate(), datePlusOneDay));
+            entityManager.clear();
+            organizeAllCampaignsAlertingChanges(campaignRepository.findByInitialDateAndFinalDate(campaign.getInitialDate(), datePlusOneDay));
             campaignRepository.save(campaign);
+            campaignChangeProducer.send(campaignConverter.convertEntityToDataContract(campaign));
         }
     }
 
@@ -72,10 +78,13 @@ public class CampaignServiceImp implements CampaignService {
     }
 
     @Override
-    public CampaignDataContract updateCampaign(CampaignDataContract campaignDataContract){
-        Campaign campaign = campaignConverter.convertDataContractToEntity(campaignDataContract);
-        campaignRepository.save(campaign);
-        campaignChangeProducer.send(campaignDataContract);
+    public CampaignDataContract updateCampaign(CampaignDataContract campaignDataContract, Long campaignId){
+        Optional<Campaign> campaign = campaignRepository.findById(campaignId);
+        if(!campaign.isPresent()){
+            throw new CampaignNotFoundException("Campanha com ID " + campaignId + "não encontrada");
+        }
+        campaignRepository.save(campaign.get());
+        campaignChangeProducer.send(campaignConverter.convertEntityToDataContract(campaign.get()));
         return campaignDataContract;
     }
 

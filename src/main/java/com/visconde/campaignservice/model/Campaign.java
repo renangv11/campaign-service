@@ -35,4 +35,5 @@ public class Campaign {
 
     @Column(name = "id_time", nullable = false)
     private Long teamId;
+
 }

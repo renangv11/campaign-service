@@ -13,8 +13,8 @@ public interface CampaignService {
 
     List<CampaignDataContract> getCampaignsByClubMember(Long clubMemberId);
 
-    CampaignDataContract updateCampaign(CampaignDataContract campaign) throws JsonProcessingException;
+    CampaignDataContract updateCampaign(CampaignDataContract campaign, Long campaignId) throws JsonProcessingException;
 
-    void deleteCampaign(Long id);
+    void deleteCampaign(Long campaignId);
 
 }

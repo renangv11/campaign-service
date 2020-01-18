@@ -6,13 +6,12 @@ import com.visconde.campaignservice.datacontract.CampaignDataContract;
 import com.visconde.campaignservice.model.Campaign;
 import com.visconde.campaignservice.model.ClubMember;
 import com.visconde.campaignservice.model.Team;
-import com.visconde.campaignservice.producer.CampaignChangeProducer;
+import com.visconde.campaignservice.kafka.producer.CampaignChangeProducer;
 import com.visconde.campaignservice.repository.CampaignRepository;
 import com.visconde.campaignservice.repository.ClubMemberRepository;
 import com.visconde.campaignservice.repository.TeamRepository;
 import com.visconde.campaignservice.service.imp.CampaignServiceImp;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class CampaignServiceImpTest {
     private CampaignConverter campaignConverter = mock(CampaignConverter.class);
     private CampaignChangeProducer campaignChangeProducer = mock(CampaignChangeProducer.class);
 
-    private CampaignService campaignService = new CampaignServiceImp(campaignRepository, teamRepository, clubMemberRepository, campaignConverter, campaignChangeProducer);
+    private CampaignService campaignService = new CampaignServiceImp(campaignRepository, teamRepository, clubMemberRepository, campaignConverter, campaignChangeProducer, null);
 
     @Test
     public void should_create_a_campaign(){
@@ -92,7 +91,7 @@ public class CampaignServiceImpTest {
         when(campaignConverter.convertDataContractToEntity(campaignDataContract))
                 .thenReturn(new Campaign());
 
-        assertEquals(campaignDataContract, campaignService.updateCampaign(campaignDataContract));
+        assertEquals(campaignDataContract, campaignService.updateCampaign(campaignDataContract, 1l));
         verify(campaignRepository).save(any(Campaign.class));
     }
 
