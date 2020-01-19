@@ -1,4 +1,4 @@
-package com.visconde.campaignservice.model;
+package com.visconde.campaignservice.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

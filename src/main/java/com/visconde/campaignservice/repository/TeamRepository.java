@@ -1,7 +1,7 @@
 package com.visconde.campaignservice.repository;
 
-import com.visconde.campaignservice.model.Campaign;
-import com.visconde.campaignservice.model.Team;
+import com.visconde.campaignservice.entities.Campaign;
+import com.visconde.campaignservice.entities.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

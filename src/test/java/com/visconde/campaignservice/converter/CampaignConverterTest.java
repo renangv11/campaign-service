@@ -1,7 +1,7 @@
 package com.visconde.campaignservice.converter;
 
 import com.visconde.campaignservice.datacontract.CampaignDataContract;
-import com.visconde.campaignservice.model.Campaign;
+import com.visconde.campaignservice.entities.Campaign;
 import org.junit.Test;
 
 import java.util.ArrayList;

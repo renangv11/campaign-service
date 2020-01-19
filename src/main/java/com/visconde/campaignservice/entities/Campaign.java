@@ -1,4 +1,4 @@
-package com.visconde.campaignservice.model;
+package com.visconde.campaignservice.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
-import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.GenerationType.SEQUENCE;
 
 @Data
 @NoArgsConstructor

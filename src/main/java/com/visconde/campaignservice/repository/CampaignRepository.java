@@ -1,9 +1,8 @@
 package com.visconde.campaignservice.repository;
 
-import com.visconde.campaignservice.model.Campaign;
+import com.visconde.campaignservice.entities.Campaign;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
